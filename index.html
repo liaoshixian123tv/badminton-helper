@@ -255,6 +255,22 @@
         const DEFAULT_GUESTS = ["阿呆", "陽痿", "同偉", "學長", "學姊", "莊妹", "煥程", "國峰"];
 
         function init() {
+            // --- 新增功能：檢查網址是否有快速設定參數 ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlToken = urlParams.get('tg_token');
+            const urlChatId = urlParams.get('tg_id');
+
+            if (urlToken && urlChatId) {
+                // 如果網址裡有密碼，直接存入設定
+                tgConfig = { token: urlToken, chatId: urlChatId };
+                localStorage.setItem('badminton_final_v2_tg', JSON.stringify(tgConfig));
+                alert("🎉 Telegram 設定已自動匯入成功！");
+                
+                // 清除網址列上的密碼，避免一直顯示比較難看 (視覺優化)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            // ------------------------------------------
+
             const p = localStorage.getItem('badminton_final_v2_players');
             const h = localStorage.getItem('badminton_final_v2_history');
             const l = localStorage.getItem('badminton_final_v2_last');
@@ -265,7 +281,9 @@
 
             if (h) history = JSON.parse(h);
             if (l) lastMatchPlayerIds = JSON.parse(l);
-            if (t) tgConfig = JSON.parse(t);
+            
+            // 如果剛才沒有從網址載入，就從 LocalStorage 讀取
+            if (!urlToken && t) tgConfig = JSON.parse(t);
 
             players.forEach(p => {
                 if (typeof p.adjustment === 'undefined') p.adjustment = 0;
