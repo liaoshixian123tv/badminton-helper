@@ -3,77 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>羽球分組 Pro V11 (UI優化版)</title>
+    <title>羽球分組 Pro Final V2</title>
     <style>
         :root {
-            --primary: #3b82f6;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #334155;
-            --priority-bg: #fffbeb;
-            --priority-border: #f59e0b;
-            --resting-bg: #e2e8f0;
-            --guest-bg: #f0fdf4;
-            --guest-border: #22c55e;
-            --score-bg: #1e293b;
-            --score-text: #f8fafc;
-            --tg-color: #2481cc;
-            --danger: #ef4444;
-            --neutral: #64748b;
+            --primary: #3b82f6; --bg: #f8fafc; --card-bg: #ffffff; --text: #334155;
+            --priority-bg: #fffbeb; --priority-border: #f59e0b; --resting-bg: #e2e8f0;
+            --tg-color: #2481cc; --regular-color: #3b82f6; --guest-color: #22c55e;
+            --score-bg: #1e293b; --score-text: #f8fafc;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px 15px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); max-width: 900px; margin: 0 auto; padding: 20px 15px; }
         h1 { text-align: center; color: #1e293b; margin-bottom: 20px; position: relative; font-size: 1.5rem; }
         
-        .settings-btn {
-            position: absolute; top: 0; right: 0;
-            background: none; border: none; font-size: 1.5em; cursor: pointer;
-            opacity: 0.5; transition: 0.3s;
-        }
+        .settings-btn { position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5em; cursor: pointer; opacity: 0.5; transition: 0.3s; }
         .settings-btn:hover { opacity: 1; transform: rotate(90deg); }
 
-        .auto-status {
-            font-size: 0.8rem; color: #64748b; text-align: center; margin-top: -15px; margin-bottom: 20px;
-            display: flex; justify-content: center; align-items: center; gap: 5px;
-        }
+        .auto-status { font-size: 0.8rem; color: #64748b; text-align: center; margin-top: -15px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; }
         .status-dot { width: 8px; height: 8px; background: #cbd5e1; border-radius: 50%; }
         .status-dot.active { background: #22c55e; box-shadow: 0 0 5px #22c55e; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* --- 臨打簽到區 --- */
-        .guest-checkin-panel {
-            background: #ffffff; border: 2px dashed #cbd5e1; padding: 15px;
-            border-radius: 12px; margin-bottom: 20px;
-        }
-        .panel-title { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #475569; }
-        .guest-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .guest-tag {
-            padding: 6px 12px; border-radius: 20px; background: #f1f5f9; color: #64748b;
-            cursor: pointer; border: 1px solid #e2e8f0; transition: all 0.2s;
-            display: flex; align-items: center; gap: 5px; user-select: none; font-size: 0.9em;
-        }
-        .guest-tag.active { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; }
+        /* --- 點名區 --- */
+        .checkin-panel { background: #ffffff; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .panel-title { font-weight: bold; margin-bottom: 10px; color: #475569; display: flex; justify-content: space-between; }
+        .checkin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 600px) { .checkin-grid { grid-template-columns: 1fr; gap: 15px; } }
+        .checkin-group h4 { margin: 0 0 8px 0; font-size: 0.9em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .checkin-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .checkin-tag { padding: 6px 12px; border-radius: 20px; background: #f1f5f9; color: #94a3b8; cursor: pointer; border: 1px solid #e2e8f0; transition: all 0.2s; display: flex; align-items: center; gap: 5px; user-select: none; font-size: 0.9em; }
+        .checkin-tag.regular.active { background: #dbeafe; color: #1e40af; border-color: #3b82f6; font-weight: bold; }
+        .checkin-tag.guest.active { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; }
+        .checkin-tag:hover { transform: translateY(-1px); }
 
         /* --- 控制區 --- */
-        .top-controls {
-            background: var(--card-bg); padding: 15px; border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px;
-            display: flex; flex-direction: column; gap: 15px;
-        }
+        .top-controls { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
         .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        
         input[type="text"] { flex: 1; min-width: 150px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; }
-        select.custom-select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; color: #475569; }
+        select.custom-select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; color: #475569; width: 100%; }
         
-        button { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; white-space: nowrap; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        
-        .btn-add-guest { background-color: #22c55e; color: white; flex-shrink: 0; padding: 10px 15px;} 
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; white-space: nowrap; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-add-reg { background-color: var(--regular-color); color: white; flex-shrink: 0; padding: 10px 15px; }
+        .btn-add-guest { background-color: var(--guest-color); color: white; flex-shrink: 0; padding: 10px 15px; }
         .btn-draw { background-color: var(--primary); color: white; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3); }
         .btn-undo { background-color: #64748b; color: white; }
         .btn-tg { background-color: var(--tg-color); color: white; }
@@ -86,47 +55,48 @@
             .btn-tg { grid-column: 1 / -1; order: -1; background-color: #f1f5f9; color: var(--tg-color); border: 1px solid var(--tg-color); }
         }
 
-        /* --- 球員卡片 --- */
-        .section-header {
-            margin: 25px 0 10px 0; font-size: 1.1em; font-weight: bold;
-            display: flex; justify-content: space-between; align-items: center;
-            color: #475569; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;
-            flex-wrap: wrap; gap: 10px; /* 允許換行 */
+        /* --- 歷史紀錄標題列 (關鍵修改區) --- */
+        .section-header { 
+            margin: 25px 0 10px 0; 
+            font-size: 1.1em; font-weight: bold; 
+            display: flex; justify-content: space-between; align-items: center; 
+            color: #475569; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; 
+            /* 讓標題和控制區塊分開，控制區塊在右 */
         }
         .section-header.priority { color: #d97706; border-color: #fcd34d; }
         .section-header.resting { color: #94a3b8; border-color: #cbd5e1; }
+        
+        /* 歷史控制群組：將按鈕和排序包在一起，並強制不換行 */
+        .history-controls-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            /* 確保按鈕跟選單排在一起 */
+        }
+        
+        .btn-mini { padding: 6px 12px; font-size: 0.85em; border-radius: 6px; }
+        .btn-reset { background-color: #e2e8f0; color: #475569; } .btn-reset:hover { background-color: #cbd5e1; }
+        .btn-clear { background-color: #fee2e2; color: #ef4444; } .btn-clear:hover { background-color: #fca5a5; color: white; }
 
-        /* 新增：歷史紀錄控制區 (包含重置、清除、排序) */
-        .history-controls-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+        /* 手機版適配：標題如果太長，控制區可能會掉下去，但會整組一起掉 */
+        @media (max-width: 480px) {
+            .section-header {
+                flex-wrap: wrap; /* 允許換行 */
+                gap: 10px;
+            }
+            .history-controls-group {
+                width: 100%;
+                justify-content: flex-end; /* 換行後靠右 */
+            }
         }
 
-        /* 小按鈕樣式 */
-        .btn-mini {
-            padding: 6px 12px;
-            font-size: 0.85em;
-            border-radius: 6px;
-        }
-        .btn-reset { background-color: #e2e8f0; color: #475569; }
-        .btn-reset:hover { background-color: #cbd5e1; }
-        .btn-clear { background-color: #fee2e2; color: #ef4444; }
-        .btn-clear:hover { background-color: #fca5a5; color: white; }
-
+        /* --- 球員卡片 --- */
         .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 10px; margin-bottom: 10px; }
         @media (min-width: 480px) { .player-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); } }
-
-        .player-card {
-            background: var(--card-bg); padding: 15px; border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative;
-            border-left: 5px solid #cbd5e1; transition: all 0.3s;
-        }
+        .player-card { background: var(--card-bg); padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #cbd5e1; transition: all 0.3s; }
         .player-card.priority-card { background-color: var(--priority-bg); border-left-color: var(--priority-border); border: 2px solid var(--priority-border); }
         .player-card.normal-card { border-left-color: #3b82f6; }
         .player-card.resting-card { background-color: var(--resting-bg); border-left-color: #94a3b8; opacity: 0.8; filter: grayscale(0.5); }
-        
         .guest-badge { font-size: 0.75em; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; margin-left: 5px; border: 1px solid #86efac; vertical-align: middle; }
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .player-name { font-size: 1.25em; font-weight: bold; padding-right: 40px; word-break: break-all; }
@@ -138,7 +108,7 @@
         select.partner-select { width: 100%; padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; margin-top: 5px; grid-column: span 2; }
         .btn-del { background: none; color: #ef4444; padding: 0; font-size: 0.85em; text-align: right; margin-top: 8px; width: 100%; }
 
-        /* --- 計分板 --- */
+        /* Scoreboard */
         .scoreboard-container { margin: 30px 0; display: none; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .scoreboard { background: var(--score-bg); color: var(--score-text); border-radius: 12px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2); text-align: center; }
@@ -158,7 +128,7 @@
         }
         .btn-finish { margin-top: 20px; width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3); }
 
-        /* --- 歷史紀錄 --- */
+        /* History */
         .history-list { display: flex; flex-direction: column; gap: 10px; }
         .match-card { background: var(--card-bg); padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 10px;}
         .match-card.completed { background-color: #f1f5f9; opacity: 0.6; }
@@ -176,7 +146,7 @@
 <body>
 
     <h1>
-        🏸 羽球分組 Pro V11
+        🏸 羽球分組 Pro Final V2
         <button class="settings-btn" onclick="openTgSettings()" title="TG 設定">⚙️</button>
     </h1>
     
@@ -185,19 +155,32 @@
         <span id="statusText">自動排程待命中 (需保持網頁開啟)</span>
     </div>
 
-    <div class="guest-checkin-panel">
-        <div class="panel-title">📋 臨打簽到區</div>
-        <div id="guestCheckinContainer" class="guest-list"></div>
+    <!-- 點名區 (Check-in) -->
+    <div class="checkin-panel">
+        <div class="panel-title">
+            <span>📋 點名區 (點擊名字切換出席/缺席)</span>
+        </div>
+        <div class="checkin-grid">
+            <div class="checkin-group">
+                <h4>👤 常駐 (Regular)</h4>
+                <div id="regularCheckinList" class="checkin-list"></div>
+            </div>
+            <div class="checkin-group">
+                <h4>🆕 臨打 (Guest)</h4>
+                <div id="guestCheckinList" class="checkin-list"></div>
+            </div>
+        </div>
     </div>
 
+    <!-- 控制區 -->
     <div class="top-controls">
         <div class="input-row">
-            <input type="text" id="playerName" placeholder="輸入新臨打姓名 (Enter)">
-            <button class="btn-add-guest" onclick="addPlayer('guest')">＋ 新增臨打</button>
+            <input type="text" id="playerName" placeholder="輸入球員姓名 (Enter)">
+            <button class="btn-add-reg" onclick="addPlayer('regular')">＋ 常駐</button>
+            <button class="btn-add-guest" onclick="addPlayer('guest')">＋ 臨打</button>
         </div>
         
         <div class="controls-grid">
-            <!-- 左側：排序 -->
             <div>
                 <select id="sortSelect" class="custom-select" onchange="changeSort(this.value)" style="width:100%">
                     <option value="count">場次 (少 → 多)</option>
@@ -206,7 +189,6 @@
                 </select>
             </div>
             
-            <!-- 右側：按鈕群組 -->
             <div class="ctrl-btn-group">
                 <button class="btn-undo" onclick="undoLastMatch()">↩ 復原</button>
                 <button class="btn-draw" onclick="generateMatch()">🏸 立即抽籤</button>
@@ -245,11 +227,11 @@
 
     <div class="section-header">
         <div class="section-title-text">📜 對戰歷史</div>
-        <!-- 修改區域：將按鈕和排序整合在這裡 -->
+        <!-- 調整後：按鈕與排序選單整合在同一區，並且緊密排列 -->
         <div class="history-controls-group">
             <button class="btn-mini btn-reset" onclick="resetCounts()">↺ 重置場次</button>
             <button class="btn-mini btn-clear" onclick="hardReset()">🔥 清除</button>
-            <select class="custom-select" onchange="changeHistorySort(this.value)" style="font-size: 0.9em; padding: 6px;">
+            <select class="custom-select" onchange="changeHistorySort(this.value)" style="font-size: 0.9em; padding: 6px; width: auto;">
                 <option value="desc">時間 (新 → 舊)</option>
                 <option value="asc">時間 (舊 → 新)</option>
             </select>
@@ -257,7 +239,7 @@
     </div>
     
     <div id="historyContainer" class="history-list"></div>
-    <div style="margin-bottom: 50px;"></div> <!-- 底部留白 -->
+    <div style="margin-bottom: 50px;"></div>
 
     <script>
         // Data Structure
@@ -273,10 +255,10 @@
         const DEFAULT_GUESTS = ["阿呆", "陽痿", "同偉", "學長", "學姊", "莊妹", "煥程", "國峰"];
 
         function init() {
-            const p = localStorage.getItem('badminton_v11_players');
-            const h = localStorage.getItem('badminton_v11_history');
-            const l = localStorage.getItem('badminton_v11_last');
-            const t = localStorage.getItem('badminton_v11_tg');
+            const p = localStorage.getItem('badminton_final_v2_players');
+            const h = localStorage.getItem('badminton_final_v2_history');
+            const l = localStorage.getItem('badminton_final_v2_last');
+            const t = localStorage.getItem('badminton_final_v2_tg');
             
             if (p) players = JSON.parse(p);
             else loadDefaultPlayers();
@@ -342,10 +324,10 @@
         }
 
         function saveData() {
-            localStorage.setItem('badminton_v11_players', JSON.stringify(players));
-            localStorage.setItem('badminton_v11_history', JSON.stringify(history));
-            localStorage.setItem('badminton_v11_last', JSON.stringify(lastMatchPlayerIds));
-            localStorage.setItem('badminton_v11_tg', JSON.stringify(tgConfig));
+            localStorage.setItem('badminton_final_v2_players', JSON.stringify(players));
+            localStorage.setItem('badminton_final_v2_history', JSON.stringify(history));
+            localStorage.setItem('badminton_final_v2_last', JSON.stringify(lastMatchPlayerIds));
+            localStorage.setItem('badminton_final_v2_tg', JSON.stringify(tgConfig));
         }
 
         function openTgSettings() {
@@ -367,9 +349,14 @@
                 }
                 return;
             }
-            const activePlayers = players.filter(p => p.isPresent);
-            if (activePlayers.length === 0) { 
-                if(!isAuto) alert("無人出席"); 
+            // Logic: Present Regulars, Present Guests, Absent Regulars
+            const presentRegulars = players.filter(p => p.isPresent && p.type === 'regular');
+            const presentGuests = players.filter(p => p.isPresent && p.type === 'guest');
+            const absentRegulars = players.filter(p => !p.isPresent && p.type === 'regular');
+            const totalPresent = presentRegulars.length + presentGuests.length;
+            
+            if (totalPresent === 0 && absentRegulars.length === 0) { 
+                if(!isAuto) alert("無資料可傳送"); 
                 return; 
             }
             
@@ -378,12 +365,12 @@
             let title = isAuto ? `⏰ 自動排程點名 (${timeStr})` : `🏸 手動點名 (${timeStr})`;
 
             let msg = `*${title}*\n📅 日期: ${dateStr}\n----------------------\n`;
-            const regulars = activePlayers.filter(p => p.type === 'regular');
-            const guests = activePlayers.filter(p => p.type === 'guest');
 
-            if (regulars.length > 0) msg += `👤 常駐 (${regulars.length}):\n${regulars.map(p => p.name).join(', ')}\n\n`;
-            if (guests.length > 0) msg += `🆕 臨打 (${guests.length}):\n${guests.map(p => p.name).join(', ')}\n\n`;
-            msg += `📊 目前共: ${activePlayers.length} 人`;
+            if (presentRegulars.length > 0) msg += `👤 常駐 (${presentRegulars.length}):\n${presentRegulars.map(p => p.name).join(', ')}\n\n`;
+            if (presentGuests.length > 0) msg += `🆕 臨打 (${presentGuests.length}):\n${presentGuests.map(p => p.name).join(', ')}\n\n`;
+            if (absentRegulars.length > 0) msg += `❌ 缺席 (${absentRegulars.length}):\n${absentRegulars.map(p => p.name).join(', ')}\n\n`;
+            
+            msg += `📊 實到人數: ${totalPresent} 人`;
 
             fetch(`https://api.telegram.org/bot${tgConfig.token}/sendMessage?chat_id=${tgConfig.chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`)
                 .then(res => res.json())
@@ -400,6 +387,7 @@
             if (!name) return;
             if (players.some(p => p.name === name)) { alert('名字重複'); return; }
 
+            // 如果是常駐，預設出席；臨打也是預設出席(方便)
             let initialAdjustment = 0;
             const activePlayers = players.filter(p => p.isPresent);
             if (activePlayers.length > 0) {
@@ -407,7 +395,7 @@
                 initialAdjustment = Math.min(...effectiveCounts);
             }
 
-            const newPlayer = createPlayerObj(name, 'guest', true); 
+            const newPlayer = createPlayerObj(name, type, true); 
             newPlayer.adjustment = initialAdjustment;
             players.push(newPlayer);
             input.value = '';
@@ -471,22 +459,40 @@
 
         function changeSort(val) { currentSortMethod = val; renderPlayers(); }
         function changeHistorySort(val) { historySortOrder = val; renderHistory(); }
-        function renderAll() { renderGuestCheckin(); renderPlayers(); }
+        function renderAll() { renderCheckin(); renderPlayers(); }
 
-        function renderGuestCheckin() {
-            const container = document.getElementById('guestCheckinContainer');
-            container.innerHTML = '';
+        function renderCheckin() {
+            const regContainer = document.getElementById('regularCheckinList');
+            const guestContainer = document.getElementById('guestCheckinList');
+            regContainer.innerHTML = '';
+            guestContainer.innerHTML = '';
+            
+            // Regulars
+            const regulars = players.filter(p => p.type === 'regular');
+            regulars.sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
+            
+            regulars.forEach(p => {
+                const div = document.createElement('div');
+                div.className = `checkin-tag regular ${p.isPresent ? 'active' : ''}`;
+                div.onclick = () => togglePresence(p.id);
+                div.innerHTML = `<span>${p.isPresent ? '✅' : '⬜'}</span><span>${p.name}</span>`;
+                regContainer.appendChild(div);
+            });
+
+            // Guests
             const guests = players.filter(p => p.type === 'guest');
             guests.sort((a, b) => {
+                // 出席的排前面
                 if (a.isPresent !== b.isPresent) return a.isPresent ? -1 : 1;
                 return a.name.localeCompare(b.name, "zh-Hant");
             });
+
             guests.forEach(p => {
                 const div = document.createElement('div');
-                div.className = `guest-tag ${p.isPresent ? 'active' : ''}`;
+                div.className = `checkin-tag guest ${p.isPresent ? 'active' : ''}`;
                 div.onclick = () => togglePresence(p.id);
                 div.innerHTML = `<span>${p.isPresent ? '✅' : '⬜'}</span><span>${p.name}</span>`;
-                container.appendChild(div);
+                guestContainer.appendChild(div);
             });
         }
 
@@ -714,7 +720,6 @@
         });
 
         init();
-        
     </script>
 </body>
 </html>
